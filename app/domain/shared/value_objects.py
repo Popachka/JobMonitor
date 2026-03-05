@@ -29,18 +29,6 @@ class SpecializationType(StrEnum):
 class LanguageType(StrEnum):
     PYTHON = "Python"
     JAVASCRIPT = "JavaScript"
-    TYPESCRIPT = "TypeScript"
-    GO = "Go"
-    JAVA = "Java"
-    KOTLIN = "Kotlin"
-    SWIFT = "Swift"
-    PHP = "PHP"
-    CPP = "C++"
-    CSHARP = "C#"
-    RUST = "Rust"
-    RUBY = "Ruby"
-
-
 @dataclass(frozen=True, slots=True)
 class Specializations:
     items: frozenset[SpecializationType]

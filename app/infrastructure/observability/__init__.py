@@ -1,5 +1,4 @@
-from .bootstrap import build_observability_service, init_metrics_server
-from .logfire_bootstrap import init_logfire
+from .bootstrap import build_observability_service, init_logfire, init_metrics_server
 from .service import NoOpObservabilityService, PrometheusObservabilityService
 
 __all__ = [

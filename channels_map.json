@@ -1,4 +1,41 @@
 {
-  "Python": ["https://t.me/ru_pythonjobs"],
-  "Common": ["@Simaca"]
+  "Python": [
+    "https://t.me/rabota_razrabotchikn",
+    "https://t.me/ru_pythonjobs",
+    "https://t.me/python_django_job",
+    "https://t.me/django_jobs",
+    "https://t.me/python_django_work",
+    "https://t.me/pythonrabota",
+    "https://t.me/job_pythonz",
+    "https://t.me/python_jobs",
+    "https://t.me/job_python",
+    "https://t.me/p_rabota",
+    "https://t.me/YotolabPython",
+    "https://t.me/Python_Jbs",
+    "https://t.me/pythonpythonjobs"
+  ],
+  "JavaScript": [
+    "https://t.me/vuejs_jobs_feed",
+    "https://t.me/angular_jobs",
+    "https://t.me/jsdevjob",
+    "https://t.me/job_react",
+    "https://t.me/job_webdev",
+    "https://t.me/JScript_jobs",
+    "https://t.me/rabotafrontend",
+    "https://t.me/rabota_razrabotchikg",
+    "https://t.me/frontend_offer",
+    "https://t.me/frontend_job_geeklink",
+    "https://t.me/js_work_job",
+    "https://t.me/YotolabFrontend"
+  ],
+  "Common": [
+    "@Simaca",
+    "https://t.me/fordev",
+    "https://t.me/jobGeeks",
+    "https://t.me/myresume_ru",
+    "https://t.me/java_c_net_golang_jobs",
+    "https://t.me/young_june",
+    "https://t.me/youritjob",
+    "https://t.me/vakansii_it"
+  ]
 }
