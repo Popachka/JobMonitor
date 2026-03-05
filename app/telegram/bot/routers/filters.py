@@ -147,7 +147,7 @@ async def _advance_or_finalize(message: Message, state: FSMContext, service: Use
 
 
 @router.message(
-    StateFilter(BotStates.main_menu, BotStates.processing_resume),
+    StateFilter(BotStates.main_menu, BotStates.processing_resume, None),
     F.text == TRACKING_BUTTON_TEXT,
 )
 async def start_filter_wizard(message: Message, state: FSMContext) -> None:
