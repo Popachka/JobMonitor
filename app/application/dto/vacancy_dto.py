@@ -24,13 +24,6 @@ class OutVacancyParse(BaseModel):
         default_factory=list,
         description="Основные языки программирования, требуемые в вакансии.",
     )
-    min_experience_months: int = Field(
-        default=0,
-        description=(
-            "Минимально требуемый опыт в месяцах. Если указано 'от 3 лет' -> 36. "
-            "Если грейд 'Junior' без лет -> 12."
-        ),
-    )
     tech_stack: list[str] = Field(
         default_factory=list,
         description="Ключевые инструменты и фреймворки (Django, React, Kubernetes).",

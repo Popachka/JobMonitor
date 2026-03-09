@@ -17,7 +17,6 @@ def vacancy_to_model(vacancy: Vacancy) -> VacancyModel:
         specializations=[s.value for s in vacancy.specializations.items],
         primary_languages=[lang.value for lang in vacancy.primary_languages.items],
         tech_stack=list(vacancy.tech_stack.items),
-        min_experience_months=vacancy.min_experience_months,
         mirror_chat_id=vacancy.mirror_chat_id,
         mirror_message_id=vacancy.mirror_message_id,
         content_hash=vacancy.content_hash.value,
@@ -34,7 +33,6 @@ def apply_vacancy(model: VacancyModel, vacancy: Vacancy) -> None:
     model.specializations = [s.value for s in vacancy.specializations.items]
     model.primary_languages = [lang.value for lang in vacancy.primary_languages.items]
     model.tech_stack = list(vacancy.tech_stack.items)
-    model.min_experience_months = vacancy.min_experience_months
     model.mirror_chat_id = vacancy.mirror_chat_id
     model.mirror_message_id = vacancy.mirror_message_id
     model.content_hash = vacancy.content_hash.value
@@ -51,7 +49,6 @@ def vacancy_from_model(model: VacancyModel) -> Vacancy:
         specializations=Specializations.from_strs(model.specializations or []),
         primary_languages=PrimaryLanguages.from_strs(model.primary_languages or []),
         tech_stack=TechStack.create(model.tech_stack or []),
-        min_experience_months=model.min_experience_months,
         mirror_chat_id=model.mirror_chat_id,
         mirror_message_id=model.mirror_message_id,
         salary=Salary.create(model.salary_amount, model.salary_currency),

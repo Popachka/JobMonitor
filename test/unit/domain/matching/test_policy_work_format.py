@@ -25,7 +25,6 @@ def _build_vacancy(work_format: WorkFormat) -> Vacancy:
         specializations_raw=["Backend"],
         languages_raw=["Python"],
         tech_stack_raw=["FastAPI"],
-        min_experience_months=36,
         mirror_chat_id=1,
         mirror_message_id=1,
         work_format=work_format,

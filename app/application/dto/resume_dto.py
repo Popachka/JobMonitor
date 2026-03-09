@@ -28,10 +28,6 @@ class OutResumeParse(BaseModel):
         default_factory=list,
         description="Основные языки программирования.",
     )
-    experience_months: int = Field(
-        default=0,
-        description="Общий коммерческий опыт в месяцах. Преобразуй года в месяцы.",
-    )
     tech_stack: list[str] = Field(
         default_factory=list,
         description=(

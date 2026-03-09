@@ -21,7 +21,6 @@ class Vacancy:
     specializations: Specializations
     primary_languages: PrimaryLanguages
     tech_stack: TechStack
-    min_experience_months: int
 
     mirror_chat_id: int
     mirror_message_id: int
@@ -41,7 +40,6 @@ class Vacancy:
         specializations_raw: list[str],
         languages_raw: list[str],
         tech_stack_raw: list[str] | None,
-        min_experience_months: int,
         mirror_chat_id: int,
         mirror_message_id: int,
         work_format: WorkFormat,
@@ -74,7 +72,6 @@ class Vacancy:
             specializations=specs,
             primary_languages=langs,
             tech_stack=stack,
-            min_experience_months=max(0, min_experience_months),
             mirror_chat_id=mirror_chat_id,
             mirror_message_id=mirror_message_id,
             salary=salary_vo,

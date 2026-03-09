@@ -53,7 +53,6 @@ class UserService:
             tech_stack = TechStack.create(dto.tech_stack)
             user.cv_tech_stack = tech_stack if tech_stack.items else None
 
-            user.cv_experience_months = max(0, dto.experience_months)
             user.cv_salary = dto.salary
 
             work_format = dto.work_format

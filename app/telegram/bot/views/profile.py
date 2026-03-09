@@ -9,7 +9,6 @@ def build_search_profile_text(user: User) -> str:
 
     salary = format_salary(user.cv_salary)
     work_format = format_work_format(user.cv_work_format)
-    experience_text, experience_hint = _format_experience_filter(user.filter_experience_min_months)
 
     lines = [
         "👤 Мой профиль поиска",
@@ -19,7 +18,6 @@ def build_search_profile_text(user: User) -> str:
         _format_search_line("Основной язык(и)", languages, bold_value=True),
         "",
         "⚙️ Настройки фильтров:",
-        f"• Опыт: {experience_text} ({experience_hint})",
         _format_mode_filter_line(
             field_name="Зарплата",
             value=salary,
@@ -64,19 +62,6 @@ def _format_search_line(
     if suffix_emoji:
         return f"• {field_name}: {rendered_value} {suffix_emoji}"
     return f"• {field_name}: {rendered_value}"
-
-
-def _format_experience_filter(filter_min_months: int | None) -> tuple[str, str]:
-    mapping: dict[int, str] = {
-        12: "от 1 года",
-        36: "от 3 лет",
-        60: "от 5 лет",
-    }
-    if filter_min_months is None:
-        return "не важен", "Не учитываем 🟢"
-    if filter_min_months in mapping:
-        return mapping[filter_min_months], "Скрываем всё, что меньше 🔴"
-    return "не важен", "Не учитываем 🟢"
 
 
 def _format_specializations(user: User) -> str | None:
