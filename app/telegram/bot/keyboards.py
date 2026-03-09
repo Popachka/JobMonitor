@@ -11,6 +11,8 @@ PROFILE_FILL_FORM_BUTTON_TEXT = "Заполнить форму (mini-app)"
 PROFILE_UPLOAD_RESUME_BUTTON_TEXT = "Загрузить резюме"
 PROFILE_FILL_FORM_CALLBACK = "profile:fill_form"
 PROFILE_UPLOAD_RESUME_CALLBACK = "profile:upload_resume"
+SETTINGS_DONE_BUTTON_TEXT = "✅ Готово"
+SETTINGS_DONE_CALLBACK = "settings:done"
 
 
 def get_main_menu_kb() -> ReplyKeyboardMarkup:
@@ -68,5 +70,9 @@ def get_settings_menu_kb(
         text=f"3. {salary_label}",
         web_app=WebAppInfo(url=salary_url),
     )
-    builder.adjust(1, 1, 1)
+    builder.button(
+        text=SETTINGS_DONE_BUTTON_TEXT,
+        callback_data=SETTINGS_DONE_CALLBACK,
+    )
+    builder.adjust(1, 1, 1, 1)
     return builder.as_markup()
