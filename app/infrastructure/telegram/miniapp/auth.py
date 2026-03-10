@@ -21,10 +21,7 @@ def validate_init_data(init_data: str, bot_token: str) -> MiniAppUserContext:
     if not received_hash:
         raise ValueError("В initData отсутствует hash.")
 
-    data_check_string = "\n".join(
-        f"{key}={value}"
-        for key, value in sorted(payload.items())
-    )
+    data_check_string = "\n".join(f"{key}={value}" for key, value in sorted(payload.items()))
     secret_key = hmac.new(
         b"WebAppData",
         bot_token.encode("utf-8"),
@@ -58,7 +55,4 @@ def validate_init_data(init_data: str, bot_token: str) -> MiniAppUserContext:
     if username is not None and not isinstance(username, str):
         raise ValueError("Некорректный username в initData.")
 
-    return MiniAppUserContext(
-        tg_id=tg_id,
-        username=username,
-    )
+    return MiniAppUserContext(tg_id=tg_id, username=username)

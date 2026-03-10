@@ -1,6 +1,12 @@
 from app.application.dto import OutResumeParse
 from app.application.ports.unit_of_work import UserUnitOfWork
-from app.domain.shared.value_objects import CurrencyType, Salary, Skills, Specializations, WorkFormat
+from app.domain.shared.value_objects import (
+    CurrencyType,
+    Salary,
+    Skills,
+    Specializations,
+    WorkFormat,
+)
 from app.domain.user.entities import User
 from app.domain.user.value_objects import FilterMode, UserId
 
@@ -55,7 +61,7 @@ class UserService:
             await self._uow.users.update(user)
         return True
 
-    async def update_specialty_and_skills_from_miniapp(
+    async def update_profile_specializations_and_skills(
         self,
         tg_id: int,
         specializations: list[str],
@@ -71,7 +77,7 @@ class UserService:
             await self._uow.users.update(user)
         return True
 
-    async def update_work_format_from_miniapp(
+    async def update_profile_work_format_filter(
         self,
         tg_id: int,
         work_format: WorkFormat | None,
@@ -87,7 +93,7 @@ class UserService:
             await self._uow.users.update(user)
         return True
 
-    async def update_salary_from_miniapp(
+    async def update_profile_salary_filter(
         self,
         tg_id: int,
         salary_amount_rub: int | None,

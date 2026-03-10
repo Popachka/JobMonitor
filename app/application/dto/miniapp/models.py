@@ -2,6 +2,8 @@ import json
 from dataclasses import dataclass
 from enum import StrEnum
 
+from pydantic import BaseModel
+
 from app.domain.shared.value_objects import SkillType, SpecializationType
 
 
@@ -15,6 +17,48 @@ class WorkFormatChoice(StrEnum):
 class SalaryModeChoice(StrEnum):
     ANY = "ANY"
     FROM = "FROM"
+
+
+@dataclass(frozen=True, slots=True)
+class ChoiceOptionDto:
+    value: str
+    label: str
+
+
+class SpecialtySaveRequest(BaseModel):
+    init_data: str
+    specializations: list[SpecializationType]
+    skills: list[SkillType]
+
+
+class FormatSaveRequest(BaseModel):
+    init_data: str
+    work_format_choice: WorkFormatChoice = WorkFormatChoice.ANY
+
+
+class SalarySaveRequest(BaseModel):
+    init_data: str
+    salary_mode: SalaryModeChoice = SalaryModeChoice.ANY
+    salary_amount_rub: int | None = None
+
+
+class SpecialtyReadResponse(BaseModel):
+    specializations: list[str]
+    skills: list[str]
+
+
+class FormatReadResponse(BaseModel):
+    work_format_choice: str
+
+
+class SalaryReadResponse(BaseModel):
+    salary_mode: str
+    salary_amount_rub: int | None
+
+
+class SaveResponse(BaseModel):
+    status: str = "ok"
+    message: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,7 +97,8 @@ def _parse_skills(raw_value: object) -> frozenset[SkillType]:
 
 
 def _parse_enum_list[EnumChoice: StrEnum](
-    raw_value: object, enum_type: type[EnumChoice]
+    raw_value: object,
+    enum_type: type[EnumChoice],
 ) -> list[EnumChoice]:
     if raw_value is None:
         return []

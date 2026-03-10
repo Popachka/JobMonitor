@@ -1,6 +1,6 @@
 import asyncio
 
-from app.infrastructure.telegram.miniapp_server import run_miniapp_server
+from app.infrastructure.telegram.miniapp import run_miniapp_server
 
 
 def main() -> None:

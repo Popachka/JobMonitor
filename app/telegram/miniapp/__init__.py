@@ -1,3 +1,3 @@
-from app.telegram.miniapp.app import app
+from app.infrastructure.telegram.miniapp.app import app, build_miniapp_app
 
-__all__ = ["app"]
+__all__ = ["app", "build_miniapp_app"]
