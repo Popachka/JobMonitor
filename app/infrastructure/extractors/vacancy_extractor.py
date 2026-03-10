@@ -9,7 +9,10 @@ class GoogleVacancyLLMExtractor(IVacancyLLMExtractor):
 
     async def parse_vacancy(self, text: str) -> OutVacancyParse:
         result = await self._agent.run(
-            user_prompt=f"Текст вакансии:\n{text}",
+            user_prompt=(
+                "Проанализируй текст и сначала определи, является ли он вакансией:\n"
+                f"{text}"
+            ),
             metadata={"pipeline": "vacancy_ingest"},
         )
         return result.output
