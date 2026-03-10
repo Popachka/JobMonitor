@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, urlunsplit
 from app.core.config import config
 from app.domain.user.entities import User
 from app.domain.user.value_objects import FilterMode
+from app.telegram.bot.views.copy import build_settings_intro_text
 from app.telegram.bot.views.tracking_settings import format_work_format
 
 SETTINGS_ENTRY_SPECIALTY = "specialty"
@@ -31,10 +32,11 @@ class SettingsMenuView:
 def build_settings_menu_view(user: User) -> SettingsMenuView:
     specs_count = len(user.cv_specializations.items)
     skills_count = len(user.cv_skills.items)
+    selected_count = specs_count + skills_count
 
-    specialty_label = f"Специальность и скиллы [{specs_count} / {skills_count}]"
+    specialty_label = f"Направления и стек [Выбрано: {selected_count}]"
     format_label = f"Формат работы [{_format_label(user)}]"
-    salary_label = f"Зарплата [{_salary_label(user)}]"
+    salary_label = f"Зарплатный ориентир [{_salary_label(user)}]"
 
     specialty_url = _build_entry_url(SETTINGS_ENTRY_SPECIALTY)
     format_url = _build_entry_url(SETTINGS_ENTRY_FORMAT)
@@ -51,11 +53,7 @@ def build_settings_menu_view(user: User) -> SettingsMenuView:
 
 
 def build_settings_menu_text() -> str:
-    return (
-        "Настройки\n\n"
-        "Каждая inline-кнопка открывает отдельную mini-app страницу.\n"
-        "Изменения сохраняются только для выбранного раздела."
-    )
+    return build_settings_intro_text()
 
 
 def _format_label(user: User) -> str:

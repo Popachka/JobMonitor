@@ -5,9 +5,9 @@ from aiogram.types import BotCommand
 async def setup_bot_commands(bot: Bot) -> None:
     await bot.set_my_commands(
         [
-            BotCommand(command="start", description="Перезапустить и открыть меню"),
-            BotCommand(command="profile", description="Показать профиль поиска"),
-            BotCommand(command="settings", description="Открыть настройки ленты"),
-            BotCommand(command="help", description="Как это работает"),
+            BotCommand(command="start", description="Открыть главное меню"),
+            BotCommand(command="profile", description="Открыть профиль поиска"),
+            BotCommand(command="settings", description="Настроить профиль и фильтры"),
+            BotCommand(command="help", description="Как бот подбирает вакансии"),
         ]
     )

@@ -3,7 +3,12 @@ from aiogram import Bot
 from app.application.services.user_service import UserService
 from app.infrastructure.db import UserUnitOfWork, async_session_factory
 from app.telegram.bot.keyboards import get_main_menu_kb, get_settings_menu_kb, get_start_kb
-from app.telegram.bot.views.settings import build_settings_menu_text, build_settings_menu_view
+from app.telegram.bot.views import (
+    build_settings_menu_text,
+    build_settings_menu_view,
+    build_settings_unavailable_text,
+    build_start_required_text,
+)
 
 
 async def send_settings_menu(bot: Bot, chat_id: int, tg_id: int) -> None:
@@ -12,7 +17,7 @@ async def send_settings_menu(bot: Bot, chat_id: int, tg_id: int) -> None:
     if user is None:
         await bot.send_message(
             chat_id=chat_id,
-            text="Нажмите «Начать пользоваться ботом», чтобы продолжить.",
+            text=build_start_required_text(),
             reply_markup=get_start_kb(),
         )
         return
@@ -21,10 +26,7 @@ async def send_settings_menu(bot: Bot, chat_id: int, tg_id: int) -> None:
     if not view.specialty_url or not view.format_url or not view.salary_url:
         await bot.send_message(
             chat_id=chat_id,
-            text=(
-                "Mini-app пока не настроен. Обновите `MINI_APP_BASE_URL` "
-                "в окружении и попробуйте снова."
-            ),
+            text=build_settings_unavailable_text(),
             reply_markup=get_main_menu_kb(),
         )
         return

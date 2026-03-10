@@ -10,6 +10,7 @@ from app.telegram.bot.keyboards import (
 )
 from app.telegram.bot.settings_menu import send_settings_menu
 from app.telegram.bot.states import BotStates
+from app.telegram.bot.views import build_settings_saved_text, build_start_required_text
 
 router = Router()
 
@@ -26,7 +27,7 @@ router = Router()
 async def cmd_settings(message: Message, state: FSMContext) -> None:
     if message.from_user is None:
         await message.answer(
-            "Нажмите «Начать пользоваться ботом», чтобы продолжить.",
+            build_start_required_text(),
             reply_markup=get_start_kb(),
         )
         return
@@ -58,10 +59,10 @@ async def open_settings_from_profile(callback: CallbackQuery, state: FSMContext)
 
 @router.callback_query(F.data == SETTINGS_DONE_CALLBACK)
 async def close_settings_menu(callback: CallbackQuery, state: FSMContext) -> None:
-    await callback.answer("Готово")
+    await callback.answer("Профиль обновлен")
     await state.set_state(BotStates.main_menu)
     if callback.message is None:
         return
     if not isinstance(callback.message, Message):
         return
-    await callback.message.edit_text("👌 Обновили настройки")
+    await callback.message.edit_text(build_settings_saved_text())

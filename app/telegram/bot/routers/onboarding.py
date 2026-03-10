@@ -8,15 +8,10 @@ from app.core.logger import get_app_logger
 from app.infrastructure.db import UserUnitOfWork, async_session_factory
 from app.telegram.bot.keyboards import START_BUTTON_TEXT, get_main_menu_kb
 from app.telegram.bot.states import BotStates
+from app.telegram.bot.views import build_start_message
 
 router = Router()
 logger = get_app_logger(__name__)
-
-AVAILABLE_COMMANDS_TEXT = (
-    "/settings — изменить настройки ленты вакансий\n"
-    "/profile — проверить свой профиль\n"
-    "/help — как это работает"
-)
 
 
 @router.message(Command("start"))
@@ -44,13 +39,8 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         return
 
     await state.set_state(BotStates.main_menu)
-    if is_new:
-        intro_text = "Регистрация завершена. Добро пожаловать в бота."
-    else:
-        intro_text = "Вы уже зарегистрированы в боте."
-
     await message.answer(
-        f"{intro_text} Вот список доступных команд 👇\n\n{AVAILABLE_COMMANDS_TEXT}",
+        build_start_message(is_new=is_new),
         reply_markup=get_main_menu_kb(),
     )
 

@@ -1,17 +1,17 @@
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
-START_BUTTON_TEXT = "Начать пользоваться ботом"
-UPLOAD_BUTTON_TEXT = "📄 Загрузить новое резюме"
+START_BUTTON_TEXT = "Открыть бота"
+UPLOAD_BUTTON_TEXT = "📄 Обновить резюме"
 CANCEL_BUTTON_TEXT = "❌ Отмена"
 HELP_BUTTON_TEXT = "❓ Как это работает?"
 PROFILE_BUTTON_TEXT = "👤 Мой профиль"
 
-PROFILE_FILL_FORM_BUTTON_TEXT = "Заполнить форму (mini-app)"
-PROFILE_UPLOAD_RESUME_BUTTON_TEXT = "Загрузить резюме"
+PROFILE_FILL_FORM_BUTTON_TEXT = "⚙️ Настроить профиль"
+PROFILE_UPLOAD_RESUME_BUTTON_TEXT = "📄 Загрузить резюме"
 PROFILE_FILL_FORM_CALLBACK = "profile:fill_form"
 PROFILE_UPLOAD_RESUME_CALLBACK = "profile:upload_resume"
-SETTINGS_DONE_BUTTON_TEXT = "✅ Готово"
+SETTINGS_DONE_BUTTON_TEXT = "✅ Готов"
 SETTINGS_DONE_CALLBACK = "settings:done"
 
 
@@ -59,15 +59,15 @@ def get_settings_menu_kb(
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
-        text=f"1. {specialty_and_skills_label}",
+        text=f"🧩 {specialty_and_skills_label}",
         web_app=WebAppInfo(url=specialty_url),
     )
     builder.button(
-        text=f"2. {format_label}",
+        text=f"🏢 {format_label}",
         web_app=WebAppInfo(url=format_url),
     )
     builder.button(
-        text=f"3. {salary_label}",
+        text=f"💰 {salary_label}",
         web_app=WebAppInfo(url=salary_url),
     )
     builder.button(

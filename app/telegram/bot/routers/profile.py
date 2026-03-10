@@ -6,7 +6,7 @@ from app.application.services.user_service import UserService
 from app.infrastructure.db import UserUnitOfWork, async_session_factory
 from app.telegram.bot.keyboards import PROFILE_BUTTON_TEXT, get_profile_actions_kb, get_start_kb
 from app.telegram.bot.states import BotStates
-from app.telegram.bot.views.profile import build_search_profile_text
+from app.telegram.bot.views import build_search_profile_text, build_start_required_text
 
 router = Router()
 
@@ -22,7 +22,7 @@ router = Router()
 async def show_profile(message: Message) -> None:
     if message.from_user is None:
         await message.answer(
-            "Нажмите «Начать пользоваться ботом», чтобы продолжить.",
+            build_start_required_text(),
             reply_markup=get_start_kb(),
         )
         return
@@ -31,7 +31,7 @@ async def show_profile(message: Message) -> None:
     user = await service.get_user_by_tg_id(message.from_user.id)
     if user is None:
         await message.answer(
-            "Нажмите «Начать пользоваться ботом», чтобы продолжить.",
+            build_start_required_text(),
             reply_markup=get_start_kb(),
         )
         return

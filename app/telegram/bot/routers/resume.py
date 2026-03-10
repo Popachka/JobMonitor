@@ -24,6 +24,25 @@ from app.telegram.bot.keyboards import (
     get_main_menu_kb,
 )
 from app.telegram.bot.states import BotStates
+from app.telegram.bot.views import (
+    build_main_menu_fallback_text,
+    build_resume_cancel_text,
+    build_resume_context_error_text,
+    build_resume_file_too_large_text,
+    build_resume_not_a_resume_text,
+    build_resume_parser_error_text,
+    build_resume_processed_text,
+    build_resume_processing_cancel_text,
+    build_resume_processing_text,
+    build_resume_prompt_text,
+    build_resume_scope_text,
+    build_resume_success_text,
+    build_resume_too_many_pages_text,
+    build_resume_unknown_error_text,
+    build_resume_unsupported_format_text,
+    build_resume_waiting_fallback_text,
+    build_start_required_text,
+)
 
 router = Router()
 logger = get_app_logger(__name__)
@@ -32,12 +51,7 @@ logger = get_app_logger(__name__)
 async def _send_resume_prompt(message: Message, state: FSMContext) -> None:
     await state.set_state(BotStates.waiting_resume)
     await message.answer(
-        "📄 Перед отправкой резюме:\n"
-        "• Поддерживается только PDF\n"
-        "• Максимальный размер: 15 МБ\n"
-        "• Максимум: 10 страниц\n\n"
-        "Пришли, пожалуйста, своё резюме файлом в формате PDF. 📄\n"
-        "Я сразу приступлю к его изучению.",
+        build_resume_prompt_text(),
         reply_markup=get_cancel_kb(),
     )
 
@@ -61,7 +75,7 @@ async def process_upload_button(message: Message, state: FSMContext) -> None:
 async def process_cancel(message: Message, state: FSMContext) -> None:
     await state.set_state(BotStates.main_menu)
     await message.answer(
-        "Понял, отменяем. Твои текущие настройки остались без изменений. ↩️",
+        build_resume_cancel_text(),
         reply_markup=get_main_menu_kb(),
     )
 
@@ -75,7 +89,7 @@ async def handle_resume_document(message: Message, state: FSMContext) -> None:
     if document is None:
         return
     if document.file_size and document.file_size > 15 * 1024 * 1024:
-        await message.answer("Файл слишком большой. Максимум 15 МБ.")
+        await message.answer(build_resume_file_too_large_text())
         return
 
     file_name = document.file_name or ""
@@ -93,24 +107,20 @@ async def handle_resume_document(message: Message, state: FSMContext) -> None:
     try:
         parser = ParserFactory.get_parser_by_extension(file_name)
         processing_message = await message.answer(
-            "⏳ Резюме в обработке. Обычно это занимает 1–2 минуты.",
+            build_resume_processing_text(),
         )
         await message.answer(
-            "Что я учитываю при подборе: 🎯\n"
-            "• Специализацию (Backend, Frontend, Fullstack и др.)\n"
-            "• Основные языки (Python, JavaScript)\n"
-            "• Доп. фильтры из настроек: зарплата и формат\n\n"
-            "Если в резюме указано несколько направлений или языков, я учту все.",
+            build_resume_scope_text(),
             reply_markup=get_main_menu_kb(),
         )
         user = message.from_user
         if user is None:
-            await reset_to_menu("Нажмите «Начать пользоваться ботом», чтобы продолжить.")
+            await reset_to_menu(build_start_required_text())
             return
 
         bot = message.bot
         if bot is None:
-            await reset_to_menu("Не удалось получить контекст бота. Попробуйте снова.")
+            await reset_to_menu(build_resume_context_error_text())
             return
         await bot.download(document.file_id, destination=buffer)
         dto = await parser.extract_text(buffer)
@@ -118,30 +128,28 @@ async def handle_resume_document(message: Message, state: FSMContext) -> None:
         service = UserService(UserUnitOfWork(async_session_factory))
         updated = await service.update_resume(user.id, dto)
         if not updated:
-            await reset_to_menu("Нажмите «Начать пользоваться ботом», чтобы продолжить.")
+            await reset_to_menu(build_start_required_text())
             return
         try:
             if processing_message is not None:
-                await processing_message.edit_text("✅ Резюме обработалось.")
+                await processing_message.edit_text(build_resume_processed_text())
         except Exception:
             logger.exception("Failed to edit processing message")
 
         await state.set_state(BotStates.main_menu)
-        await message.answer(
-            "Профиль обновлен из резюме. Теперь буду присылать подходящие вакансии. 🔎"
-        )
+        await message.answer(build_resume_success_text())
 
     except ValueError:
-        await reset_to_menu("Формат не поддерживается.")
+        await reset_to_menu(build_resume_unsupported_format_text())
     except NotAResumeError:
-        await reset_to_menu("Этот файл не похож на резюме.")
+        await reset_to_menu(build_resume_not_a_resume_text())
     except TooManyPagesError:
-        await reset_to_menu("Слишком много страниц (макс. 10).")
+        await reset_to_menu(build_resume_too_many_pages_text())
     except ParserError:
-        await reset_to_menu("Не удалось обработать файл.")
+        await reset_to_menu(build_resume_parser_error_text())
     except Exception:
         logger.exception("Resume parsing failed")
-        await reset_to_menu("Произошла ошибка при анализе.")
+        await reset_to_menu(build_resume_unknown_error_text())
     finally:
         buffer.close()
         if await state.get_state() == BotStates.processing_resume.state:
@@ -151,30 +159,28 @@ async def handle_resume_document(message: Message, state: FSMContext) -> None:
 @router.message(StateFilter(BotStates.waiting_resume))
 async def waiting_resume_fallback(message: Message) -> None:
     await message.answer(
-        "Чтобы продолжить, мне нужен твой PDF-файл. 📄\n"
-        "Текст или фото я прочитать не смогу.\n\n"
-        "Жду резюме или нажми «Отмена», чтобы вернуться в меню.",
+        build_resume_waiting_fallback_text(),
         reply_markup=get_cancel_kb(),
     )
 
 
 @router.message(StateFilter(BotStates.processing_resume), F.text == UPLOAD_BUTTON_TEXT)
 async def processing_resume_block(message: Message) -> None:
-    await message.answer("Резюме уже в обработке. Обычно это занимает 1–2 минуты.")
+    await message.answer(build_resume_processing_text())
 
 
 @router.message(StateFilter(BotStates.processing_resume), F.text == CANCEL_BUTTON_TEXT)
 async def processing_resume_cancel(message: Message, state: FSMContext) -> None:
     await state.set_state(BotStates.main_menu)
     await message.answer(
-        "Обработка прервана. Можешь отправить резюме заново.",
+        build_resume_processing_cancel_text(),
         reply_markup=get_main_menu_kb(),
     )
 
 
 @router.message(StateFilter(BotStates.processing_resume), F.document)
 async def processing_resume_document_block(message: Message) -> None:
-    await message.answer("Резюме уже в обработке. Обычно это занимает 1–2 минуты.")
+    await message.answer(build_resume_processing_text())
 
 
 @router.message(
@@ -185,6 +191,6 @@ async def processing_resume_document_block(message: Message) -> None:
 )
 async def main_menu_fallback(message: Message) -> None:
     await message.answer(
-        "Используйте кнопки меню или команды /profile, /settings, /help.",
+        build_main_menu_fallback_text(),
         reply_markup=get_main_menu_kb(),
     )

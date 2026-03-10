@@ -11,13 +11,13 @@ def build_search_profile_text(user: User) -> str:
     work_format = format_work_format(user.cv_work_format)
 
     lines = [
-        "👤 Мой профиль поиска",
+        "👤 Профиль поиска",
         "",
-        "📍 Что мы ищем:",
+        "Бот ориентируется на эти параметры:",
         _format_search_line("Направление(я)", specializations, bold_value=True),
-        _format_search_line("Скиллы", skills, bold_value=True),
+        _format_search_line("Стек и навыки", skills, bold_value=True),
         "",
-        "⚙️ Настройки фильтров:",
+        "⚙️ Настройки вашего профиля:",
         _format_mode_filter_line(
             field_name="Зарплата",
             value=salary,
@@ -59,7 +59,7 @@ def _format_search_line(
     bold_value: bool = False,
 ) -> str:
     if value is None:
-        return f"• {field_name}: не найдено в резюме"
+        return f"• {field_name}: пока не указаны"
 
     rendered_value = f"<b>{value}</b>" if bold_value else value
     if suffix_emoji:
