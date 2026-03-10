@@ -89,10 +89,6 @@ install:
 
 run:
 	uv run -m $(PYTHON_MAIN)
-
-run-miniapp:
-	uv run -m app.telegram.miniapp.main
-
 lint:
 	@echo "Starting checks..."
 	uv run python -m ruff check $(PROJECT_DIR) $(TEST_DIR)
@@ -119,8 +115,7 @@ precommit-run:
 
 clean:
 	@echo "Start cleaning..."
-	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
-	rm -rf .mypy_cache .ruff_cache .pytest_cache .egg-info
+	uv run python -c "from pathlib import Path; import shutil; root = Path('.'); [p.unlink() for p in root.rglob('*.pyc')]; [p.unlink() for p in root.rglob('*.pyo')]; [shutil.rmtree(p, ignore_errors=True) for p in root.rglob('__pycache__') if p.is_dir()]; [shutil.rmtree(p, ignore_errors=True) for p in (root / '.mypy_cache', root / '.ruff_cache', root / '.pytest_cache')]; [shutil.rmtree(p, ignore_errors=True) for p in root.glob('*.egg-info') if p.is_dir()]"
 	@echo "Cleaning done!"
 
 docker-build:
