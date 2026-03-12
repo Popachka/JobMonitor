@@ -1,65 +1,51 @@
 import pytest
-from app.domain.shared import Specializations, SpecializationType
-from app.domain.shared import PrimaryLanguages, LanguageType
-from app.domain.shared import TechStack, Salary, CurrencyType
+
+from app.domain.shared import CurrencyType, Salary, Skills, SkillType, SpecializationType, Specializations
 
 
-def test_specializations_from_strs_valid():
-    input_strings = ["Backend", "BACKEND", "  Frontend  ", "", "InvalidName"]
+def test_specializations_from_strs_valid() -> None:
+    input_strings = ["Backend", "Backend", "  Frontend  ", "", "InvalidName"]
     result = Specializations.from_strs(input_strings)
 
     assert isinstance(result, Specializations)
     assert isinstance(result.items, frozenset)
-
     assert SpecializationType.BACKEND in result.items
     assert SpecializationType.FRONTEND in result.items
     assert len(result.items) == 2
 
 
-def test_primary_languages_from_strs_valid():
-    input_strings = ["Python", "", "dsadasd"]
-    result = PrimaryLanguages.from_strs(input_strings)
+def test_skills_from_strs_accepts_only_exact_enum_values() -> None:
+    input_strings = ["Python", " Python ", "React", "invalid", "", "VUE"]
+    result = Skills.from_strs(input_strings)
 
-    assert isinstance(result, PrimaryLanguages)
+    assert isinstance(result, Skills)
     assert isinstance(result.items, frozenset)
-
-    assert LanguageType.PYTHON in result.items
-    assert len(result.items) == 1
+    assert result.items == frozenset({SkillType.PYTHON, SkillType.REACT})
 
 
 @pytest.mark.parametrize(
-    "input_data, expected",
+    ("amount", "currency_input", "expected_amount", "expected_currency"),
     [
-        ([" python ", "js"], {"Python", "Js"}),
-        ([], set()),
-        (None, set()),
-        (["", "  "], set()),
-        (["python", "python", "PYTHON"], {"Python"}),
+        (100000, "RUB", 100000, CurrencyType.RUB),
+        (5000, "usd", None, None),
+        (3000, "  eUr  ", None, None),
+        (1500, "  ", 1500, CurrencyType.RUB),
+        (2000, None, 2000, CurrencyType.RUB),
+        (None, None, None, None),
     ],
 )
-def test_tech_stack_behavior(input_data, expected):
-    stack = TechStack.create(input_data)
-    assert stack.items == frozenset(expected)
-
-
-@pytest.mark.parametrize(
-    "amount, currency_input, expected_currency",
-    [
-        (100000, "RUB", CurrencyType.RUB),
-        (5000, "usd", CurrencyType.USD),
-        (3000, "  eUr  ", CurrencyType.EUR),
-        (1500, "  ", None),
-        (2000, None, None),
-        (None, None, None),
-    ],
-)
-def test_salary_create_success(amount, currency_input, expected_currency):
+def test_salary_create_success(
+    amount: int | None,
+    currency_input: str | None,
+    expected_amount: int | None,
+    expected_currency: CurrencyType | None,
+) -> None:
     salary = Salary.create(amount=amount, currency=currency_input)
 
-    assert salary.amount == amount
+    assert salary.amount == expected_amount
     assert salary.currency == expected_currency
 
 
-def test_salary_negative_amount():
+def test_salary_negative_amount() -> None:
     with pytest.raises(ValueError):
-        Salary.create(amount=-1, currency="USD")
+        Salary.create(amount=-1, currency="RUB")

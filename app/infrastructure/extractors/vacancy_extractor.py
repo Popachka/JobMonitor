@@ -1,6 +1,7 @@
 from app.application.dto import OutVacancyParse
 from app.application.ports.llm_port import IVacancyLLMExtractor
 from app.infrastructure.llm import get_vacancy_parse_agent
+from app.infrastructure.llm_runtime import run_with_llm_retry
 
 
 class GoogleVacancyLLMExtractor(IVacancyLLMExtractor):
@@ -8,8 +9,14 @@ class GoogleVacancyLLMExtractor(IVacancyLLMExtractor):
         self._agent = get_vacancy_parse_agent()
 
     async def parse_vacancy(self, text: str) -> OutVacancyParse:
-        result = await self._agent.run(
-            user_prompt=f"Текст вакансии:\n{text}",
-            metadata={"pipeline": "vacancy_ingest"},
+        result = await run_with_llm_retry(
+            "vacancy_parse",
+            lambda: self._agent.run(
+                user_prompt=(
+                    "Проанализируй текст и сначала определи, является ли он вакансией:\n"
+                    f"{text}"
+                ),
+                metadata={"pipeline": "vacancy_ingest"},
+            ),
         )
         return result.output

@@ -1,16 +1,14 @@
 from app.application.dto import OutResumeParse
 from app.application.ports.unit_of_work import UserUnitOfWork
 from app.domain.shared.value_objects import (
-    PrimaryLanguages,
+    CurrencyType,
+    Salary,
+    Skills,
     Specializations,
-    TechStack,
     WorkFormat,
 )
 from app.domain.user.entities import User
-from app.domain.user.value_objects import (
-    FilterMode,
-    UserId,
-)
+from app.domain.user.value_objects import FilterMode, UserId
 
 
 class UserService:
@@ -21,30 +19,18 @@ class UserService:
         async with self._uow:
             return await self._uow.users.get_by_tg_id(UserId(tg_id))
 
-    async def upsert_user(self, tg_id: int, username: str | None) -> User:
-        user = User.create(tg_id=tg_id, username=username)
-        async with self._uow:
-            await self._uow.users.upsert(user)
-        return user
-
-    async def update_filters(
-        self,
-        tg_id: int,
-        experience_min_months: int | None,
-        salary_mode: FilterMode,
-        work_format: WorkFormat | None,
-        work_format_mode: FilterMode,
-    ) -> bool:
+    async def get_or_create_user(self, tg_id: int, username: str | None) -> tuple[User, bool]:
         async with self._uow:
             user = await self._uow.users.get_by_tg_id(UserId(tg_id))
             if user is None:
-                return False
-            user.filter_experience_min_months = experience_min_months
-            user.filter_salary_mode = salary_mode
-            user.cv_work_format = work_format
-            user.filter_work_format_mode = work_format_mode
-            await self._uow.users.update(user)
-        return True
+                user = User.create(tg_id=tg_id, username=username)
+                await self._uow.users.add(user)
+                return user, True
+
+            if user.username != username:
+                user.username = username
+                await self._uow.users.update(user)
+            return user, False
 
     async def update_resume(self, tg_id: int, dto: OutResumeParse) -> bool:
         async with self._uow:
@@ -56,18 +42,80 @@ class UserService:
             user.cv_specializations = Specializations.from_strs(
                 [item.value for item in dto.specializations]
             )
-            user.cv_primary_languages = PrimaryLanguages.from_strs(
-                [item.value for item in dto.primary_languages]
-            )
+            user.cv_skills = Skills.from_strs([item.value for item in dto.skills])
 
-            tech_stack = TechStack.create(dto.tech_stack)
-            user.cv_tech_stack = tech_stack if tech_stack.items else None
-
-            user.cv_experience_months = max(0, dto.experience_months)
             user.cv_salary = dto.salary
+            if dto.salary is not None and dto.salary.amount is not None:
+                user.filter_salary_mode = FilterMode.STRICT
+            else:
+                user.cv_salary = None
+                user.filter_salary_mode = FilterMode.SOFT
 
             work_format = dto.work_format
             user.cv_work_format = None if work_format == WorkFormat.UNDEFINED else work_format
+            if user.cv_work_format is not None:
+                user.filter_work_format_mode = FilterMode.STRICT
+            else:
+                user.filter_work_format_mode = FilterMode.SOFT
+
+            await self._uow.users.update(user)
+        return True
+
+    async def update_profile_specializations_and_skills(
+        self,
+        tg_id: int,
+        specializations: list[str],
+        skills: list[str],
+    ) -> bool:
+        async with self._uow:
+            user = await self._uow.users.get_by_tg_id(UserId(tg_id))
+            if user is None:
+                return False
+
+            user.cv_specializations = Specializations.from_strs(specializations)
+            user.cv_skills = Skills.from_strs(skills)
+            await self._uow.users.update(user)
+        return True
+
+    async def update_profile_work_format_filter(
+        self,
+        tg_id: int,
+        work_format: WorkFormat | None,
+        work_format_mode: FilterMode,
+    ) -> bool:
+        async with self._uow:
+            user = await self._uow.users.get_by_tg_id(UserId(tg_id))
+            if user is None:
+                return False
+
+            normalized_work_format = None if work_format == WorkFormat.UNDEFINED else work_format
+            user.cv_work_format = normalized_work_format
+            user.filter_work_format_mode = (
+                work_format_mode if normalized_work_format is not None else FilterMode.SOFT
+            )
+            await self._uow.users.update(user)
+        return True
+
+    async def update_profile_salary_filter(
+        self,
+        tg_id: int,
+        salary_amount_rub: int | None,
+        salary_mode: FilterMode,
+    ) -> bool:
+        async with self._uow:
+            user = await self._uow.users.get_by_tg_id(UserId(tg_id))
+            if user is None:
+                return False
+
+            if salary_mode == FilterMode.STRICT and salary_amount_rub is not None:
+                user.cv_salary = Salary.create(
+                    amount=salary_amount_rub,
+                    currency=CurrencyType.RUB.value,
+                )
+                user.filter_salary_mode = FilterMode.STRICT
+            else:
+                user.cv_salary = None
+                user.filter_salary_mode = FilterMode.SOFT
 
             await self._uow.users.update(user)
         return True

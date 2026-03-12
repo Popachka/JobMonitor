@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from app.domain.shared.value_objects import LanguageType, Salary, SpecializationType, WorkFormat
+from app.domain.shared.value_objects import Salary, SkillType, SpecializationType, WorkFormat
 
 
 class InfoRawVacancy(BaseModel):
@@ -14,35 +14,24 @@ class InfoRawVacancy(BaseModel):
 class OutVacancyParse(BaseModel):
     is_vacancy: bool = Field(
         ...,
-        description=("Признак того, является ли текст описанием вакансии (job description)."),
+        description="Признак того, является ли текст описанием вакансии.",
     )
     specializations: list[SpecializationType] = Field(
         default_factory=list,
-        description="Области разработки. Если ищут фулстека — укажи [Backend, Frontend].",
+        description="Список специализаций, подходящих для вакансии.",
     )
-    primary_languages: list[LanguageType] = Field(
+    skills: list[SkillType] = Field(
         default_factory=list,
-        description="Основные языки программирования, требуемые в вакансии.",
-    )
-    min_experience_months: int = Field(
-        default=0,
-        description=(
-            "Минимально требуемый опыт в месяцах. Если указано 'от 3 лет' -> 36. "
-            "Если грейд 'Junior' без лет -> 12."
-        ),
-    )
-    tech_stack: list[str] = Field(
-        default_factory=list,
-        description="Ключевые инструменты и фреймворки (Django, React, Kubernetes).",
+        description="Список ключевых скиллов из фиксированного перечня SkillType.",
     )
     salary: Salary | None = Field(
         default=None,
         description=(
-            "Minimum salary. If a range is given, take the minimum. "
-            "If salary is missing, set to null. If currency is missing, set currency to null."
+            "Минимальная зарплата в RUB. Если указан диапазон, бери минимальное значение. "
+            "Если зарплата не указана, указана в другой валюте или RUB нельзя надежно определить, верни null."
         ),
     )
     work_format: WorkFormat = Field(
         default=WorkFormat.UNDEFINED,
-        description="Формат работы (REMOTE, HYBRID, ONSITE, UNDEFINED).",
+        description="Формат работы: REMOTE, HYBRID, ONSITE или UNDEFINED.",
     )

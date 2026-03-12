@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form
+  class="settings-form"
+  data-miniapp-form
+  data-page-kind="specialty"
+  data-save-url="{{ save_url }}"
+  data-success-text="{{ success_text }}"
+>
+  <section class="form-section">
+    <h2 class="section-title">Специализации</h2>
+    <div class="choice-grid">
+      {% for item in specialization_options %}
+      <label class="choice-chip">
+        <input
+          class="choice-chip__input"
+          type="checkbox"
+          name="specializations"
+          value="{{ item }}"
+          {% if item in selected_specializations %}checked{% endif %}
+        />
+        <span class="choice-chip__label">{{ item }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2 class="section-title">Скиллы</h2>
+    <div class="choice-sections">
+      {% for section in skill_sections %}
+      <section class="choice-section" aria-label="{{ section.title }}">
+        <h3 class="choice-section__title">{{ section.title }}</h3>
+        <div class="choice-grid">
+          {% for item in section.options %}
+          <label class="choice-chip">
+            <input
+              class="choice-chip__input"
+              type="checkbox"
+              name="skills"
+              value="{{ item.value }}"
+              {% if item.value in selected_skills %}checked{% endif %}
+            />
+            <span class="choice-chip__label">{{ item.label }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+    </div>
+  </section>
+
+  <p class="form-status" data-status aria-live="polite"></p>
+
+  <div class="sticky-action-bar">
+    <button class="save-button" type="submit" data-submit-button>{{ action_label }}</button>
+  </div>
+</form>
+{% endblock %}

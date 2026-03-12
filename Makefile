@@ -9,7 +9,7 @@ PROD_COMPOSE = docker-compose -f docker-compose.yml
 OBS_COMPOSE = docker-compose -f docker-compose.observability.yml
 BACKUP_DIR ?= /opt/backups
 
-.PHONY: help venv install run lint format test test-unit test-integration clean \
+.PHONY: help venv install run run-miniapp lint format test test-unit test-integration clean \
 	docker-build \
 	dev-up dev-down dev-destroy dev-logs dev-ps dev-restart \
 	prod-up prod-down prod-destroy prod-logs prod-ps prod-restart prod-migrate \
@@ -27,7 +27,8 @@ help:
 	@echo "Available make commands:"
 	@echo "  venv              - Create a virtual environment (uv)"
 	@echo "  install           - Install project dependencies (uv sync)"
-	@echo "  run               - Run the app locally"
+	@echo "  run               - Run the app locally (bot + scraper + mini-app)"
+	@echo "  run-miniapp       - Run only the mini-app server locally"
 	@echo "  lint              - Run ruff + mypy"
 	@echo "  format            - Auto-format with ruff"
 	@echo "  test              - Run all tests"
@@ -88,7 +89,6 @@ install:
 
 run:
 	uv run -m $(PYTHON_MAIN)
-
 lint:
 	@echo "Starting checks..."
 	uv run python -m ruff check $(PROJECT_DIR) $(TEST_DIR)
@@ -115,8 +115,7 @@ precommit-run:
 
 clean:
 	@echo "Start cleaning..."
-	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
-	rm -rf .mypy_cache .ruff_cache .pytest_cache .egg-info
+	uv run python -c "from pathlib import Path; import shutil; root = Path('.'); [p.unlink() for p in root.rglob('*.pyc')]; [p.unlink() for p in root.rglob('*.pyo')]; [shutil.rmtree(p, ignore_errors=True) for p in root.rglob('__pycache__') if p.is_dir()]; [shutil.rmtree(p, ignore_errors=True) for p in (root / '.mypy_cache', root / '.ruff_cache', root / '.pytest_cache')]; [shutil.rmtree(p, ignore_errors=True) for p in root.glob('*.egg-info') if p.is_dir()]"
 	@echo "Cleaning done!"
 
 docker-build:

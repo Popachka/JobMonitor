@@ -1,30 +1,28 @@
 from app.domain.user.entities import User
 from app.domain.user.value_objects import FilterMode
-from app.telegram.bot.tracking_settings_view import format_salary, format_work_format
+from app.telegram.bot.views.tracking_settings import format_salary, format_work_format
 
 
 def build_search_profile_text(user: User) -> str:
     specializations = _format_specializations(user)
-    languages = _format_languages(user)
-    stack = _format_stack(user)
+    skills = _format_skills(user)
 
     salary = format_salary(user.cv_salary)
     work_format = format_work_format(user.cv_work_format)
-    experience_text, experience_hint = _format_experience_filter(user.filter_experience_min_months)
 
     lines = [
-        "👤 Мой профиль поиска",
+        "👤 Профиль поиска",
         "",
-        "📍 Что мы ищем:",
+        "Бот ориентируется на эти параметры:",
         _format_search_line("Направление(я)", specializations, bold_value=True),
-        _format_search_line("Основной язык(и)", languages, bold_value=True),
+        _format_search_line("Стек и навыки", skills, bold_value=True),
         "",
-        "⚙️ Настройки фильтров:",
-        f"• Опыт: {experience_text} ({experience_hint})",
+        "⚙️ Настройки вашего профиля:",
         _format_mode_filter_line(
             field_name="Зарплата",
             value=salary,
             mode=user.filter_salary_mode,
+            any_value="Любая",
             soft_hint="Не учитываем 🟢",
             strict_hint="Скрываем всё, что меньше 🔴",
         ),
@@ -32,6 +30,7 @@ def build_search_profile_text(user: User) -> str:
             field_name="Формат",
             value=work_format,
             mode=user.filter_work_format_mode,
+            any_value="Любой",
             soft_hint="Не учитываем 🟢",
             strict_hint="Только этот формат 🔴",
         ),
@@ -43,11 +42,12 @@ def _format_mode_filter_line(
     field_name: str,
     value: str | None,
     mode: FilterMode,
+    any_value: str,
     soft_hint: str,
     strict_hint: str,
 ) -> str:
     if value is None:
-        return f"• {field_name}: не найдено в резюме"
+        value = any_value
     hint = strict_hint if mode == FilterMode.STRICT else soft_hint
     return f"• {field_name}: {value} ({hint})"
 
@@ -59,25 +59,12 @@ def _format_search_line(
     bold_value: bool = False,
 ) -> str:
     if value is None:
-        return f"• {field_name}: не найдено в резюме"
+        return f"• {field_name}: пока не указаны"
 
     rendered_value = f"<b>{value}</b>" if bold_value else value
     if suffix_emoji:
         return f"• {field_name}: {rendered_value} {suffix_emoji}"
     return f"• {field_name}: {rendered_value}"
-
-
-def _format_experience_filter(filter_min_months: int | None) -> tuple[str, str]:
-    mapping: dict[int, str] = {
-        12: "от 1 года",
-        36: "от 3 лет",
-        60: "от 5 лет",
-    }
-    if filter_min_months is None:
-        return "не важен", "Не учитываем 🟢"
-    if filter_min_months in mapping:
-        return mapping[filter_min_months], "Скрываем всё, что меньше 🔴"
-    return "не важен", "Не учитываем 🟢"
 
 
 def _format_specializations(user: User) -> str | None:
@@ -87,14 +74,8 @@ def _format_specializations(user: User) -> str | None:
     return ", ".join(values)
 
 
-def _format_languages(user: User) -> str | None:
-    values = sorted(item.value for item in user.cv_primary_languages.items)
+def _format_skills(user: User) -> str | None:
+    values = sorted(item.value for item in user.cv_skills.items)
     if not values:
         return None
     return ", ".join(values)
-
-
-def _format_stack(user: User) -> str | None:
-    if user.cv_tech_stack is None or not user.cv_tech_stack.items:
-        return None
-    return ", ".join(sorted(user.cv_tech_stack.items))

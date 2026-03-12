@@ -22,6 +22,12 @@ class BaseAppSettings(BaseSettings):
     TELETHON_LOGIN_MODE: str = "qr"
     TELEGRAM_2FA_PASSWORD: str | None = None
     BOT_TOKEN: str
+
+    MINI_APP_BASE_URL: str = ""
+    MINI_APP_SAVE_API_URL: str = ""
+    MINI_APP_SERVER_HOST: str
+    MINI_APP_SERVER_PORT: int
+
     CHANNELS_MAP_PATH: str = "channels_map.json"
     MIRROR_CHANNEL: int
 
@@ -37,6 +43,8 @@ class BaseAppSettings(BaseSettings):
     SENTRY_DSN: str | None = None
     SENTRY_ENV: str
     SENTRY_TRACES_SAMPLE_RATE: float = 0.0
+
+    LOG_LEVEL: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
 
     LOGFIRE_ENABLED: bool = True
     LOGFIRE_TOKEN: str | None = None
@@ -114,6 +122,7 @@ class BaseAppSettings(BaseSettings):
         required_strings = {
             "API_HASH": self.API_HASH,
             "BOT_TOKEN": self.BOT_TOKEN,
+            "MINI_APP_BASE_URL": self.MINI_APP_BASE_URL,
             "GOOGLE_API_KEY": self.GOOGLE_API_KEY,
             "POSTGRES_SERVER": self.POSTGRES_SERVER,
             "POSTGRES_USER": self.POSTGRES_USER,
@@ -141,6 +150,7 @@ class LocalAppSettings(BaseAppSettings):
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5433
     SENTRY_ENV: str = "development"
+    LOG_LEVEL: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "DEBUG"
     LOGFIRE_ENV: str = "development"
 
 
@@ -148,6 +158,7 @@ class DockerAppSettings(BaseAppSettings):
     POSTGRES_SERVER: str = "db"
     POSTGRES_PORT: int = 5432
     SENTRY_ENV: str = "production"
+    LOG_LEVEL: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
     LOGFIRE_ENV: str = "production"
 
 

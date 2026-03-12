@@ -9,6 +9,7 @@ from app.core.logger import get_app_logger
 from app.domain.user.value_objects import UserId
 from app.infrastructure.db import UserUnitOfWork
 from app.telegram.bot.keyboards import START_BUTTON_TEXT, get_start_kb
+from app.telegram.bot.views import build_start_required_text
 
 logger = get_app_logger(__name__)
 
@@ -40,7 +41,7 @@ class UserGuardMiddleware(BaseMiddleware):
 
         if user is None:
             await event.answer(
-                "Нажмите «Начать пользоваться ботом», чтобы продолжить.",
+                build_start_required_text(),
                 reply_markup=get_start_kb(),
             )
             return None
