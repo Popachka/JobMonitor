@@ -13,7 +13,6 @@ def get_google_model() -> Model:
     provider = GoogleProvider(api_key=config.GOOGLE_API_KEY)
     return GoogleModel(config.GOOGLE_MODEL, provider=provider)
 
-
 @lru_cache(maxsize=1)
 def get_vacancy_parse_agent() -> Agent[None, OutVacancyParse]:
     allowed_skills = ", ".join(skill.value for skill in SkillType)
@@ -75,10 +74,34 @@ def get_resume_parse_agent() -> Agent[None, OutResumeParse]:
         "Правила:\n"
         "1. is_resume=true только для резюме и профилей кандидата.\n"
         "2. specializations выбирай только из фиксированного списка.\n"
+        "   - Определи основную специализацию по желаемой должности, названию последних ролей "
+        "и подтвержденному коммерческому опыту.\n"
+        "   - Сильные сигналы: заголовок резюме, блок 'Желаемая должность', названия реальных "
+        "должностей, многократно повторяющиеся обязанности.\n"
+        "   - Слабые сигналы: 'интересно развиваться', 'хочу изучать', 'ожидания', смежные "
+        "инструменты, разовые задачи в проекте.\n"
+        "   - Не добавляй специализацию только по смежному стеку или карьерному интересу.\n"
+        "   - Не ставь Data Science / ML только из-за RAG, LLM, embeddings, vector search, "
+        "Whisper, AI agents, evaluation или работы с мультимодальными данными, если кандидат "
+        "по роли является backend-разработчиком и не описывает себя как ML engineer / "
+        "data scientist.\n"
+        "   - Не ставь Infrastructure & DevOps только из-за Docker, Linux, Nginx, CI/CD, SSH, "
+        "Bash, reverse proxy или деплойных задач, если это обычный стек backend-разработчика, "
+        "а не основная инфраструктурная роль.\n"
+        "   - Если есть сомнение, выбирай меньше специализаций.\n"
         f"3. skills выбирай только из SkillType: {allowed_skills}.\n"
         "   - Извлекай только явные упоминания.\n"
-        "   - React и Vue сохраняй как отдельные skills.\n"
         "   - Не придумывай skills вне списка.\n"
+        "   - Machine Learning указывай только если есть явный опыт именно в ML, а не просто "
+        "использование LLM/RAG как прикладного backend-инструмента.\n"
+        "   - NLP можно указывать, если в резюме явно есть работа с LLM, текстом, retrieval "
+        "или NLP-задачами.\n"
+        "   - Computer Vision не указывай только по упоминанию видео, аудио или Whisper; "
+        "нужны явные CV-задачи как часть работы кандидата.\n"
+        "   - DevOps и System Administration не указывай только по Docker/Linux/Nginx/SSH, "
+        "если это вторичные навыки backend-инженера.\n"
+        "   - Data Analysis не выводи только из наличия SQL.\n"
+        "   - Если есть сомнение, выбирай меньше skills.\n"
         "4. salary — желаемая зарплата только в RUB; если указан диапазон, бери минимум. "
         "Если валюта другая или надежно определить RUB нельзя, верни null.\n"
         "5. work_format — одно из REMOTE, HYBRID, ONSITE, UNDEFINED.\n"
