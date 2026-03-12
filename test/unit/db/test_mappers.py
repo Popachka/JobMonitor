@@ -47,5 +47,3 @@ def test_user_mapper_normalizes_undefined_work_format_to_any() -> None:
 
     assert restored.cv_work_format is None
     assert restored.filter_work_format_mode == FilterMode.SOFT
-
-

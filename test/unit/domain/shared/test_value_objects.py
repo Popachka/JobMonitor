@@ -1,6 +1,13 @@
 import pytest
 
-from app.domain.shared import CurrencyType, Salary, Skills, SkillType, SpecializationType, Specializations
+from app.domain.shared import (
+    CurrencyType,
+    Salary,
+    Skills,
+    SkillType,
+    SpecializationType,
+    Specializations,
+)
 
 
 def test_specializations_from_strs_valid() -> None:
