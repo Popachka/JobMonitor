@@ -12,7 +12,8 @@
     "https://t.me/p_rabota",
     "https://t.me/YotolabPython",
     "https://t.me/Python_Jbs",
-    "https://t.me/pythonpythonjobs"
+    "https://t.me/pythonpythonjobs",
+    "https://t.me/rabotapython"
   ],
   "JavaScript": [
     "https://t.me/vuejs_jobs_feed",
@@ -26,9 +27,118 @@
     "https://t.me/frontend_offer",
     "https://t.me/frontend_job_geeklink",
     "https://t.me/js_work_job",
-    "https://t.me/YotolabFrontend"
+    "https://t.me/YotolabFrontend",
+    "https://t.me/job_react",
+    "https://t.me/jsdevjob"
+  ],
+  "JAVA": [
+    "https://t.me/job_javadevs",
+    "https://t.me/javadevjob",
+    "https://t.me/rabota_razrabotchikw",
+    "https://t.me/java_spring_job_geeklink",
+    "https://t.me/alljvmjobs",
+    "https://t.me/java_rabota",
+    "https://t.me/Java_workit",
+    "https://t.me/jvmjobs",
+    "https://t.me/alljvmjobs",
+    "https://t.me/job_java"
+  ],
+  "C#": [
+    "https://t.me/csharpdevjob",
+    "https://t.me/forcsharp",
+    "https://t.me/DotNetRuJobsFeed",
+    "https://t.me/rabotacschap",
+    "https://t.me/runello_rus_c",
+    "https://t.me/DotNetRuJobs"
+  ],
+  "GO": [
+    "https://t.me/godevjob",
+    "https://t.me/GolangJobsit",
+    "https://t.me/rabota_golang",
+    "https://t.me/forgoandrust",
+    "https://t.me/Gollang_Jobs",
+    "https://t.me/runello_rus_goland",
+    "https://t.me/golangjobsuz"
+  ],
+  "C": [],
+  "C++": [
+    "https://t.me/cppdevjob",
+    "https://t.me/forcpp",
+    "https://t.me/c_rabota",
+    "https://t.me/ProCxxJobs"
+  ],
+  "RUBY": [
+    "https://t.me/forruby",
+    "https://t.me/rubyjob",
+    ""
+  ],
+  "RUST": [
+    "https://t.me/rust_jobs_feed",
+    "https://t.me/rust_jobs"
+
+  ],
+  "PHP": [
+    "https://t.me/phpdevjob",
+    "https://t.me/jobforphp",
+    "https://t.me/phprabota",
+    "https://t.me/PHP_rabota",
+    "https://t.me/rabotaphp"
+  ],
+  "NODEJS": [
+    "https://t.me/nodejsjobsfeed",
+    "https://t.me/nodejs_jobs_feed"
+  ],
+  "TYPESCRIPT": [],
+  "KOTLIN": [
+    "https://t.me/kotlin_jobs"
+
+  ],
+  "ML": [
+    "https://t.me/datasciencejobs",
+    "https://t.me/datascienceml_jobs",
+    "https://t.me/odsjobs",
+    "https://t.me/dev_connectablejobs",
+    "https://t.me/datajobschannel",
+    "https://t.me/ml_data_science_job"
+
+    
+  ],
+  "MOBILE": [
+    "https://t.me/mobile_jobs",
+    "https://t.me/react_native_jobs",
+    "https://t.me/dartlang_jobs"
+
+  ],
+  "GAMEDEV": [
+    "https://t.me/forgamedev",
+    "https://t.me/gamedevjob",
+    "https://t.me/gamedev_unity_unreal_engine_jobs",
+    "https://t.me/job_gamedev",
+    "https://t.me/devjobs",
+    "https://t.me/rabota_v_gamedeve",
+    "https://t.me/Jobs_Unity",
+    "https://t.me/ue_pub"
+  ],
+  "QA": [
+    "https://t.me/qa_jobs",
+    "https://t.me/qa_chillout_jobs",
+    "https://t.me/forallqa"
+
+  ],
+  "DEVOPS": [
+    "https://t.me/devops_jobs",
+    "https://t.me/devops_jobs_feed",
+    "https://t.me/sysadmin_jobs",
+    "https://t.me/DevOpsSRE_Jobs"
+  ],
+  "ANALYTICS": [
+    "https://t.me/datajob"
+  ],
+  "EMBEDDED": [
+    "https://t.me/rabotaembedded"
   ],
   "Common": [
+    "@gastro0",
     "https://t.me/fordev",
     "https://t.me/jobGeeks",
     "https://t.me/myresume_ru",
@@ -36,6 +146,13 @@
     "https://t.me/young_june",
     "https://t.me/youritjob",
     "https://t.me/vakansii_it",
-    "@g_jobbot"
+    "@g_jobbot",
+    "https://t.me/vacancy_cs",
+    "https://t.me/jobs_it",
+    "https://t.me/devs_it",
+    "https://t.me/jobs_in_it_remoute",
+    "https://t.me/workayte",
+    "https://t.me/js_node_typescript_vue_job",
+    "https://t.me/developers_job_geeklink"
   ]
 }
